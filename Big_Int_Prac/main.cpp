@@ -3,33 +3,58 @@
 using namespace std;
 using namespace boost::multiprecision;
 
+using BigInt = cpp_int;
+
+// Modular exponentiation for BigInt
+BigInt modExp(BigInt base, BigInt exp, BigInt mod) {
+    BigInt res = 1;
+    base %= mod;
+    while (exp > 0) {
+        if (exp % 2 == 1)
+            res = (res * base) % mod;
+        base = (base * base) % mod;
+        exp /= 2;
+    }
+    return res;
+}
+
+// Modular inverse using Fermat's little theorem (for prime modulus)
+BigInt modInverse(BigInt a, BigInt p) {
+    // a^(p-2) mod p
+    return modExp(a, p - 2, p);
+}
+
 int main() {
-    // Define big integer type
-    cpp_int big1, big2, result;
+    // -------------------------
+    // Large prime example
+    // -------------------------
+    BigInt p("100000000000000000039"); // large prime (for demo)
+    BigInt g = 5;
+    BigInt a = 123456789; // private key
+    BigInt y = modExp(g, a, p); // public key y = g^a % p
 
-    // Assign very large values (beyond 64-bit)
-    big1 = cpp_int("123456789123456789123456789123456789");
-    big2 = cpp_int("987654321987654321987654321987654321");
+    cout << "Public Keys: (p,g,y): " << p << " " << g << " " << y << endl;
+    cout << "Private Key: a = " << a << endl;
 
-    // Perform arithmetic operations
-    result = big1 + big2;
-    cout << "Addition: " << result << endl;
+    // -------------------------
+    // Encryption
+    // -------------------------
+    BigInt m = 987654321; // message
+    BigInt k = 111111;    // random secret integer
 
-    result = big2 - big1;
-    cout << "Subtraction: " << result << endl;
+    BigInt c1 = modExp(g, k, p);
+    BigInt c2 = (m * modExp(y, k, p)) % p;
 
-    result = big1 * big2;
-    cout << "Multiplication: " << result << endl;
+    cout << "Ciphertext: " << c1 << " " << c2 << endl;
 
-    result = big2 / big1;
-    cout << "Division: " << result << endl;
+    // -------------------------
+    // Decryption
+    // -------------------------
+    BigInt s = modExp(c1, a, p);
+    BigInt s_inv = modInverse(s, p);
+    BigInt dec = (c2 * s_inv) % p;
 
-    result = big2 % big1;
-    cout << "Modulo: " << result << endl;
-
-    // Power example (big exponentiation)
-    result = pow(big1, 5);  // big1^5
-    cout << "Power: " << result << endl;
+    cout << "Decrypted message: " << dec << endl;
 
     return 0;
 }
