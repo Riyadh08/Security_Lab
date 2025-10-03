@@ -9,63 +9,29 @@ using BigInt = cpp_int;
 
 // Modular inverse using Extended Euclidean Algorithm
 BigInt modInverse(BigInt a, BigInt m) {
-    BigInt m0 = m, y = 0, x = 1;
+    BigInt m0 = m;
+    BigInt x = 1, y = 0;
+
     if (m == 1) return 0;
 
     while (a > 1) {
-        BigInt q = a / m;
-        BigInt t = m;
+        BigInt q = a / m;       // quotient
+        BigInt rem = a % m; // remainder
 
-        m = a % m;
-        a = t;
-        t = y;
+        BigInt old_a = a;
+        BigInt old_y = y;
+
+        a = m;
+        m = rem;
 
         y = x - q * y;
-        x = t;
+        x = old_y;
     }
+
     if (x < 0) x += m0;
     return x;
 }
 
-// Trial division prime factorization (unique factors)
-vector<BigInt> primeFactors(BigInt n) {
-    vector<BigInt> factors;
-    BigInt two = 2;
-    while (n % two == 0) {
-        factors.push_back(two);
-        n /= two;
-    }
-    for (BigInt i = 3; i * i <= n; i += 2) {
-        while (n % i == 0) {
-            factors.push_back(i);
-            n /= i;
-        }
-    }
-    if (n > 1) factors.push_back(n);
-
-    // remove duplicates
-    sort(factors.begin(), factors.end());
-    factors.erase(unique(factors.begin(), factors.end()), factors.end());
-    return factors;
-}
-
-// Find primitive root modulo p
-BigInt findGenerator(BigInt p) {
-    BigInt phi = p - 1;
-    auto factors = primeFactors(phi);
-
-    for (BigInt g = 2; g < p; g++) {
-        bool ok = true;
-        for (auto q : factors) {
-            if (powm(g, phi / q, p) == 1) { // g^(phi/q) mod p == 1 ?
-                ok = false;
-                break;
-            }
-        }
-        if (ok) return g;
-    }
-    throw runtime_error("No generator found");
-}
 
 // Key generation: returns {private x, public y}
 pair<BigInt, BigInt> keyGen(BigInt p, BigInt g) {
