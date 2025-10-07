@@ -1,0 +1,10 @@
+//Demo
+g++ main.cpp -o my_program -I "C:\boost_1_84_0" && .\my_program.exe
+
+//Header
+#include <boost/multiprecision/cpp_int.hpp>
+
+
+//Running command
+g++ main.cpp -o main -I "C:\Users\asus\OneDrive\Desktop\4-1\2K20 resources\LAB\CSE 4116 (C&NS)\ECC_Large\boost_1_89_0"
+./main.cpp
