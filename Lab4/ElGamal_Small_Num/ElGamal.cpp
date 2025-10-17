@@ -2,22 +2,6 @@
 using namespace std;
 #define ll long long
 
-// ll modExp(ll a, ll b, ll n) {
-//     if (b == 0) return 1;
-//     ll half = modExp(a, b / 2, n);  // compute once
-//     ll result = (half * half) % n;
-//     if (b & 1) result = (result * a) % n;
-//     return result;
-// }
-
-// ll  modExp(ll a, ll b, ll n){
-//     if(b==0) return 1;
-   
-//     if(b&1){
-//         return a * (modExp(a, b/2, n) * modExp(a, b/2, n)) % n;
-//     }
-//     return (modExp(a, b/2, n) * modExp(a, b/2, n)) % n;
-// }
 
 ll modExp(ll a, ll b, ll n){
 
