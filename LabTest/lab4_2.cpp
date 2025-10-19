@@ -69,7 +69,7 @@ int main() {
     if (left == right)
         cout << "Signature is valid!\n";
     else
-        cout << " Signature is invalid!\n";
+        cout << "Signature is invalid!\n";
 
     return 0;
 }

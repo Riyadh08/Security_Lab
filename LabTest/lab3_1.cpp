@@ -18,22 +18,44 @@ ll powMod(ll base, ll exp, ll n){
         if(exp &1) res = (res * base) % n;
 
         exp >>= 1;
-        base = base * base;
+        base = (base * base) % n;
 
     }
     return res;
 }
 
+ll modInv(ll e, ll phi)
+{
+    ll a = e, b = phi;
+    ll x = 1, y = 0;
+
+    while(b != 0)
+    {
+        ll q = a / b;
+        ll rem = a % b;
+
+        a = b;
+        b = rem;
+
+        ll temp = x - y * q;
+        x = y;
+        y = temp;
+    }
+    if(x < 0) x += phi;
+    return x;
+}
 
 int main() {
-    ll p, q;
-    cin>>p>>q;
+    ll p = 19, q = 23;
+    // cin>>p>>q;
     ll n = p * q;
 
     ll phi = (p-1) * (q-1);
     ll e = 2;
     while(gcd(e, phi) != 1) e++;
-    cout<<"phublic key (e): "<<e<<endl;
+    cout<<"public key (e): "<<e<<endl;
+    ll d = modInv(e, phi);
+    cout<<"private key (d): "<<d<<endl;
 
     ll cnt = 0;
     ll dd[5];
@@ -47,19 +69,21 @@ int main() {
     for(auto it : dd) cout<<it<<" ";
     cout<<endl;
 
-    ll ms;
-    cin>>ms;
+    ll ms = 12;
+    // cin>>ms;
     ll c1 = powMod(ms, e, n);
+    cout<<"Ciphertext: "<<c1<<endl;
+    ll dec = powMod(c1, d, n);
+    cout<<"Decrypted using d: "<<dec<<endl;
 
     for(ll i=2; i<n; i++){
+       // cout<<"ryad,=== "<<i<<endl;
         if(ms == powMod(c1, i, n)){
             cout<<"Decrypted: "<<ms<<endl;
             cout<<"Iteration is: "<<i<<endl;
             break;
         }
     }
-
-
     
     return 0;
 }
